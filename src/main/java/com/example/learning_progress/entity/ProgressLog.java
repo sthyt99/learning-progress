@@ -21,12 +21,12 @@ public class ProgressLog {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	/**
 	 * 学習日
 	 */
 	private LocalDate date;
-	
+
 	/**
 	 * 学習内容説明
 	 */
@@ -35,19 +35,20 @@ public class ProgressLog {
 	/**
 	 * 学習時間
 	 */
-    private double hoursSpent;
+	private double hoursSpent;
 
-    /**
-     * 学習目標
-     */
-    @ManyToOne
-    @JoinColumn(name = "goal_id")
-    private LearningGoal goal;
+	/**
+	 * 学習目標
+	 */
+	@ManyToOne
+	@JoinColumn(name = "goal_id")
+	private LearningGoal goal;
 
-    /**
-     * コンストラクタ
-     */
-    public ProgressLog() {}
+	/**
+	 * コンストラクタ
+	 */
+	public ProgressLog() {
+	}
 
 	/**
 	 * IDを取得する

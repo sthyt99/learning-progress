@@ -1,7 +1,9 @@
 package com.example.learning_progress.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,37 +24,37 @@ public class LearningGoal {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	/**
 	 * タイトル
 	 */
 	private String title;
-	
+
 	/**
 	 * 目標時間
 	 */
 	private int targetHoure;
-	
+
 	/**
 	 * 作成日
 	 */
 	private LocalDateTime createdAt;
-	
+
 	/**
 	 * ユーザー情報
 	 */
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
-	
+
 	@OneToMany(mappedBy = "goal", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProgressLog> progressLogs;
-	
+	private List<ProgressLog> progressLogs;
+
 	/**
 	 * コンストラクタ
 	 */
 	public LearningGoal() {
-		
+
 	}
 
 	/**
@@ -134,20 +136,20 @@ public class LearningGoal {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
+
 	/**
 	 * 進捗情報を取得する
 	 * @return progressLogs
 	 */
 	public List<ProgressLog> getProgressLogs() {
-        return progressLogs;
-    }
+		return progressLogs;
+	}
 
 	/**
 	 * 進捗情報を設定する
 	 * @param progressLogs 進捗情報
 	 */
-    public void setProgressLogs(List<ProgressLog> progressLogs) {
-        this.progressLogs = progressLogs;
-    }
+	public void setProgressLogs(List<ProgressLog> progressLogs) {
+		this.progressLogs = progressLogs;
+	}
 }
