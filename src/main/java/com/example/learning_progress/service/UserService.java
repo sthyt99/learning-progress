@@ -32,7 +32,7 @@ public class UserService {
 	public Optional<User> findByUsername(String username) {
 
 		// ユーザー名を取得する
-		return userRepository.findeByUsername(username);
+		return userRepository.findByUsername(username);
 	}
 
 	/**
