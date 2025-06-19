@@ -1,4 +1,4 @@
-package com.example.learning_progress.util;
+package com.example.learning_progress.security;
 
 import java.security.Key;
 import java.time.Duration;
@@ -22,9 +22,9 @@ public class JwtUtil {
 	private static final long EXPIRATION_MS = Duration.ofDays(1).toMillis();
 
 	// 秘密鍵の文字列(32文字以上)
-	private final String secret = "your-256-bit-secret-your-256-bit-secret";
+	private static final String secret = "your-256-bit-secret-your-256-bit-secret";
 	// Key 型に変換し、署名用に利用
-	private final Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+	private static final Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
 
 	/**
 	 * ユーザー名からJWTトークンを生成する
