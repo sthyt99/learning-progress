@@ -2,6 +2,7 @@ package com.example.learning_progress.service;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.learning_progress.entity.User;
@@ -10,17 +11,12 @@ import com.example.learning_progress.repository.UserRepository;
 @Service
 public class UserService {
 
-	/**
-	 * ユーザーリポジトリ
-	 */
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 
-	/**
-	 * コンストラクタ
-	 * @param userRepository ユーザーリポジトリ
-	 */
-	public UserService(UserRepository userRepository) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	/**
@@ -43,6 +39,9 @@ public class UserService {
 	 */
 	public User registerUser(User user) {
 
+		// パスワードをハッシュ化して保存する
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		
 		// ユーザーエンティティをデータベースへ登録する
 		return userRepository.save(user);
 	}
