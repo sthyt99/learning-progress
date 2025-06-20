@@ -3,6 +3,9 @@ package com.example.learning_progress.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,9 +48,11 @@ public class LearningGoal {
 	 */
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@JsonBackReference
 	private User user;
 
 	@OneToMany(mappedBy = "goal", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
 	private List<ProgressLog> progressLogs;
 
 	/**
