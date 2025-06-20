@@ -36,7 +36,7 @@ public class LearningGoal {
 	/**
 	 * 目標時間
 	 */
-	private int targetHoure;
+	private int targetHours;
 
 	/**
 	 * 作成日
@@ -98,16 +98,16 @@ public class LearningGoal {
 	 * 目標時間を取得する
 	 * @return targetHoure
 	 */
-	public int getTargetHoure() {
-		return targetHoure;
+	public int getTargetHours() {
+		return targetHours;
 	}
 
 	/**
 	 * 目標時間を設定する
 	 * @param targetHoure 目標時間
 	 */
-	public void setTargetHoure(int targetHoure) {
-		this.targetHoure = targetHoure;
+	public void setTargetHours(int targetHours) {
+		this.targetHours = targetHours;
 	}
 
 	/**
