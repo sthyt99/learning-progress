@@ -3,6 +3,7 @@ package com.example.learning_progress.controller;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.learning_progress.dto.response.ProgressLogDto;
 import com.example.learning_progress.entity.LearningGoal;
 import com.example.learning_progress.entity.ProgressLog;
 import com.example.learning_progress.entity.User;
@@ -80,7 +82,7 @@ public class ProgressLogController {
 	 * 自分の目標の記録のみ取得する
 	 */
 	@GetMapping("/goal/{goalId}")
-	public ResponseEntity<?> getLogs(@PathVariable Long goalId) {
+	public ResponseEntity<List<ProgressLogDto>> getLogs(@PathVariable Long goalId) {
 
 		// ログイン認証済みユーザーのユーザー名を取得する
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -97,14 +99,21 @@ public class ProgressLogController {
 		if (!Objects.equals(goal.getUser().getId(), user.getId())) {
 
 			// 例外をスローする
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("他人の目標には記録できません");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 
-		// サービス層の処理を実行し、IDから学習進捗一覧を取得する
-		List<ProgressLog> goals = logService.getLogsByGoalId(goalId);
+		// DTOに変換（エンティティを直接返さない）
+		List<ProgressLogDto> result = logService.getLogsByGoalId(goalId)
+				.stream()
+				.map(log -> new ProgressLogDto(
+						log.getId(),
+						log.getDate(),
+						log.getDescription(),
+						log.getHoursSpent()))
+				.collect(Collectors.toList());
 
 		// 学習進捗一覧を返却する
-		return ResponseEntity.ok(goals);
+		return ResponseEntity.ok(result);
 	}
 
 	@DeleteMapping("/{logId}")
