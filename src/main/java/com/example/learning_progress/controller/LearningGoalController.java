@@ -2,6 +2,7 @@ package com.example.learning_progress.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.learning_progress.dto.response.LearningGoalDto;
 import com.example.learning_progress.entity.LearningGoal;
 import com.example.learning_progress.entity.User;
 import com.example.learning_progress.service.LearningGoalService;
@@ -59,7 +61,7 @@ public class LearningGoalController {
 	 * 自分の目標を取得する
 	 */
 	@GetMapping("/me")
-	public ResponseEntity<List<LearningGoal>> getMyGoals() {
+	public ResponseEntity<List<LearningGoalDto>> getMyGoals() {
 
 		// ログイン認証済みユーザーのユーザー名を取得する
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -68,8 +70,19 @@ public class LearningGoalController {
 		User user = userService.findByUsername(username)
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
+		// DTOに変換（エンティティを直接返さない）
+		List<LearningGoalDto> result = learningGoalService.getGoalsByUserId(user.getId())
+		        .stream()
+		        .map(goal -> new LearningGoalDto(
+		            goal.getId(),
+		            goal.getTitle(),
+		            goal.getTargetHours(),
+		            goal.getCreatedAt()
+		        ))
+		        .collect(Collectors.toList());
+
 		// 目標を取得する
-		return ResponseEntity.ok(learningGoalService.getGoalsByUserId(user.getId()));
+		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/user/{userId}")
