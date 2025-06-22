@@ -1,6 +1,5 @@
 package com.example.learning_progress.controller;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.learning_progress.dto.request.ProgressLogRequest;
 import com.example.learning_progress.dto.response.ProgressLogDto;
 import com.example.learning_progress.entity.LearningGoal;
 import com.example.learning_progress.entity.ProgressLog;
@@ -23,6 +23,8 @@ import com.example.learning_progress.entity.User;
 import com.example.learning_progress.service.LearningGoalService;
 import com.example.learning_progress.service.ProgressLogService;
 import com.example.learning_progress.service.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/progress")
@@ -45,7 +47,7 @@ public class ProgressLogController {
 	 * 学習記録を追加する
 	 */
 	@PostMapping
-	public ResponseEntity<?> addLog(@RequestBody ProgressLog log) {
+	public ResponseEntity<?> addLog(@Valid @RequestBody ProgressLogRequest request) {
 
 		// ログイン認証済みユーザーのユーザー名を取得する
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -55,7 +57,7 @@ public class ProgressLogController {
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
 		// 対象の目標がログインユーザーのものであることを検証する
-		LearningGoal goal = goalService.findById(log.getGoal().getId())
+		LearningGoal goal = goalService.findById(request.getGoalId())
 				.orElseThrow(() -> new RuntimeException("Goal not found"));
 
 		// 学習目標のIDが認証済みユーザーのIDと一致しない場合
@@ -65,17 +67,25 @@ public class ProgressLogController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("他人の目標には記録できません");
 		}
 
-		// 学習目標を設定する
+		// 学習状況を設定する
+		ProgressLog log = new ProgressLog();
 		log.setGoal(goal);
+		log.setDate(request.getDate());
+		log.setDescription(request.getDescription());
+		log.setHoursSpent(request.getHoursSpent());
 
-		// サービス層の保存処理を実行し、保存した学習進捗情報を取得する
+		// 学習状況を登録する
 		ProgressLog saved = logService.addProgress(log);
 
-		// 新しく作成されたリソースの場所（URI）をヘッダーに記述する
-		URI location = URI.create("/api/progress/" + saved.getId());
+		// 学習状況を保存する
+		ProgressLogDto dto = new ProgressLogDto(
+				saved.getId(),
+				saved.getDate(),
+				saved.getDescription(),
+				saved.getHoursSpent());
 
-		// 保存された学習進捗情報をJSONボディへ返却する
-		return ResponseEntity.created(location).body(saved);
+		// 保存された学習進捗情報を返却する
+		return ResponseEntity.ok(dto);
 	}
 
 	/**
