@@ -22,15 +22,17 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> handleValidatioinErrors(MethodArgumentNotValidException ex) {
 
-		List<String> errors = ex.getBindingResult()
+		List<ValidationErrorDetail> errors = ex.getBindingResult()
 				.getFieldErrors() // 個別のフィールドエラーを取得
 				.stream()
-				.map(error -> error.getField() + "は" + error.getDefaultMessage()) // 例:"username は 空白にできません"
+				.map(error -> new ValidationErrorDetail(
+						error.getField(),
+						error.getField() + "は" + error.getDefaultMessage(), // 例:"username は 空白にできません"
+						error.getCode())) // バリデーションコード例: NotBlank, Min
 				.collect(Collectors.toList());
 
 		// 「400 Bad Request」で、日時・ステータスコード・エラーリストを含むオブジェクトを返却する
 		return ResponseEntity.badRequest().body(
 				new ValidationErrorResponse(LocalDateTime.now(), 400, errors));
 	}
-
 }

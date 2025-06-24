@@ -23,6 +23,7 @@ public class JwtUtil {
 
 	// 秘密鍵の文字列(32文字以上)
 	private static final String secret = "your-256-bit-secret-your-256-bit-secret";
+	
 	// Key 型に変換し、署名用に利用
 	private static final Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
 
