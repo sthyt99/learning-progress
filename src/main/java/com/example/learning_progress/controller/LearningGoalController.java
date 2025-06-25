@@ -1,8 +1,6 @@
 package com.example.learning_progress.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -48,18 +46,10 @@ public class LearningGoalController {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		// ユーザ名を検索し、ユーザー情報を取得する。存在しない場合、例外をスローする。
-		User user = userService.findByUsername(username)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+		User user = userService.findByUsernameOrThrow(username);
 
-		// 学習目標のフィールドを設定する
-		LearningGoal goal = new LearningGoal();
-		goal.setTitle(request.getTitle());
-		goal.setTargetHours(request.getTargetHours());
-		goal.setUser(user);
-		goal.setCreatedAt(LocalDateTime.now());
-
-		// 学習目標を登録する
-		LearningGoal saved = learningGoalService.createGoal(goal);
+		// Service層で重複チェック付き登録を実行
+		LearningGoal saved = learningGoalService.createGoalForUser(user, request.getTitle(), request.getTargetHours());
 
 		// DTOに保存する
 		LearningGoalDto dto = new LearningGoalDto(
@@ -82,8 +72,7 @@ public class LearningGoalController {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		// ユーザ名を検索し、ユーザー情報を取得する。存在しない場合、例外をスローする。
-		User user = userService.findByUsername(username)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+		User user = userService.findByUsernameOrThrow(username);
 
 		// DTOに変換（エンティティを直接返さない）
 		List<LearningGoalDto> result = learningGoalService.getGoalsByUserId(user.getId())
@@ -113,10 +102,9 @@ public class LearningGoalController {
 	public ResponseEntity<LearningGoal> findById(@PathVariable Long id) {
 
 		// サービス層の処理を実行し、IDから学習目標情報を取得する
-		Optional<LearningGoal> goal = learningGoalService.findById(id);
+		LearningGoal goal = learningGoalService.findByIdOrThrow(id);
 
 		// 存在する場合(「200 OK」)、学習目標情報を返却し、存在しない場合「404 NOT FOUND」を返却する
-		return goal.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.notFound().build());
+		return ResponseEntity.ok(goal);
 	}
 }
