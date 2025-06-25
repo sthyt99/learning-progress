@@ -1,7 +1,5 @@
 package com.example.learning_progress.controller;
 
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,10 +42,9 @@ public class UserController {
 	public ResponseEntity<User> getByUsername(@PathVariable String username) {
 
 		// サービス層の処理を実行し、ユーザー名からユーザー情報を取得する
-		Optional<User> user = userService.findByUsername(username);
+		User user = userService.findByUsernameOrThrow(username);
 
 		// 存在する場合「200 OK」、存在しない場合「404 NOT FOUND」を返却する
-		return user.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.notFound().build());
+		return ResponseEntity.ok(user);
 	}
 }

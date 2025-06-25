@@ -20,6 +20,8 @@ import com.example.learning_progress.dto.response.ProgressLogDto;
 import com.example.learning_progress.entity.LearningGoal;
 import com.example.learning_progress.entity.ProgressLog;
 import com.example.learning_progress.entity.User;
+import com.example.learning_progress.exception.BusinessException;
+import com.example.learning_progress.exception.ErrorCode;
 import com.example.learning_progress.service.LearningGoalService;
 import com.example.learning_progress.service.ProgressLogService;
 import com.example.learning_progress.service.UserService;
@@ -53,18 +55,16 @@ public class ProgressLogController {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		// ユーザ名を検索し、ユーザー情報を取得する。存在しない場合、例外をスローする。
-		User user = userService.findByUsername(username)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+		User user = userService.findByUsernameOrThrow(username);
 
 		// 対象の目標がログインユーザーのものであることを検証する
-		LearningGoal goal = goalService.findById(request.getGoalId())
-				.orElseThrow(() -> new RuntimeException("Goal not found"));
+		LearningGoal goal = goalService.findByIdOrThrow(request.getGoalId());
 
 		// 学習目標のIDが認証済みユーザーのIDと一致しない場合
 		if (!Objects.equals(goal.getUser().getId(), user.getId())) {
 
 			// 例外をスローする
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("他人の目標には記録できません");
+			throw new BusinessException("他人の目標には記録できません", ErrorCode.UNAUTHORIZED_ACTION);
 		}
 
 		// 学習状況を設定する
@@ -98,12 +98,10 @@ public class ProgressLogController {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		// ユーザ名を検索し、ユーザー情報を取得する。存在しない場合、例外をスローする。
-		User user = userService.findByUsername(username)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+		User user = userService.findByUsernameOrThrow(username);
 
 		// 対象の目標がログインユーザーのものであることを検証する
-		LearningGoal goal = goalService.findById(goalId)
-				.orElseThrow(() -> new RuntimeException("Goal not found"));
+		LearningGoal goal = goalService.findByIdOrThrow(goalId);
 
 		// 学習目標のIDが認証済みユーザーのIDと一致しない場合
 		if (!Objects.equals(goal.getUser().getId(), user.getId())) {
