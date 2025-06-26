@@ -36,16 +36,16 @@ public class LearningGoalService {
 	 * @return 学習目標を保存する
 	 */
 	public LearningGoal createGoalForUser(User user, String title, int targetHours) {
-		
+
 		// 同じ目標がある時、trueを返却する。
 		boolean exists = goalRepository.findByUserId(user.getId()).stream()
 				.anyMatch(g -> g.getTitle().equalsIgnoreCase(title)); // 大文字、小文字を区別しない
-		
+
 		// 同じタイトルが存在する場合、業務例外をスローする
 		if (exists) {
 			throw new BusinessException("同じタイトルの目標は既に存在します", ErrorCode.DUPLICATE_OPERATION);
 		}
-		
+
 		// 新規目標を作成する
 		LearningGoal goal = new LearningGoal();
 		goal.setTitle(title);
@@ -80,5 +80,14 @@ public class LearningGoalService {
 		// 一致する学習目標IDを取得する
 		return goalRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("指定された学習目標が存在しません"));
+	}
+
+	/**
+	 * 全学習目標取得処理(管理者用)
+	 * 
+	 * @return 学習目標をすべて取得する
+	 */
+	public List<LearningGoal> findAll() {
+		return goalRepository.findAll();
 	}
 }

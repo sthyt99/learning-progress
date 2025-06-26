@@ -72,8 +72,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				}
 			}
 		}
-
-		// チェーン内の次のフィルターやコントローラへリクエストを渡す
-		filterChain.doFilter(request, response);
+		
+		// トークンが無いまたは、不正な形式の場合
+		if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
+			
+			// チェーン内の次のフィルターやコントローラへリクエストを渡す
+		    filterChain.doFilter(request, response);
+		    return;
+		}
 	}
 }

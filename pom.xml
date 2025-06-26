@@ -91,6 +91,13 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		
+		<!-- OpenAPIの導入 -->
+		<dependency>
+		  <groupId>org.springdoc</groupId>
+		  <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+		  <version>2.5.0</version> <!-- ※最新安定版推奨 -->
+		</dependency>
 
 	</dependencies>
 

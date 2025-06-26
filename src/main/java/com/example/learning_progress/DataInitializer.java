@@ -2,6 +2,7 @@ package com.example.learning_progress;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,19 @@ public class DataInitializer {
 
 			// ユーザーチェック
 			Optional<User> existing = userRepository.findByUsername("alice");
+			
+			Optional<User> existingAdmin = userRepository.findByUsername("admin");
+			
+			// ADMINユーザーがいない場合
+			if (existingAdmin.isEmpty()) {
+				
+				// ADMINユーザー作成
+				User admin = new User();
+				admin.setUsername("admin");
+				admin.setPassword(passwordEncoder.encode("adminpass"));
+				admin.setRoles(Set.of("ADMIN"));
+				userRepository.save(admin);
+			}
 
 			// ユーザーが存在しない場合
 			if (existing.isEmpty()) {
@@ -41,6 +55,7 @@ public class DataInitializer {
 				User alice = new User();
 				alice.setUsername("alice");
 				alice.setPassword(passwordEncoder.encode("password123"));
+				alice.setRoles(Set.of("USER"));
 				userRepository.save(alice);
 
 				// 学習目標作成

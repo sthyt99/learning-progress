@@ -47,6 +47,8 @@ public class SecurityConfig {
 				.csrf(csrf -> csrf.disable()) // CSRF不要のため無効化
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/api/auth/**", "/api/users").permitAll() // 指定パスの認証を不要
+						.requestMatchers("/api/admin/**").hasRole("ADMIN") // 管理者専用
+						.requestMatchers("/api/goals/**", "/api/progress/**").hasAnyRole("USER", "ADMIN")
 						.anyRequest().authenticated() // それ以外は認証が必要
 				)
 				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // トークンを前提とし、セッションを使用しない

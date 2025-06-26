@@ -57,4 +57,13 @@ public class ProgressLogService {
 		// 対象行の進捗情報を消去する
 		logRepository.deleteById(logId);
 	}
+
+	/**
+	 * 全学習状況取得処理
+	 * 
+	 * @return 学習状況をすべて取得する
+	 */
+	public List<ProgressLog> findAll() {
+		return logRepository.findAll();
+	}
 }
