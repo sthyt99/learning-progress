@@ -1,9 +1,10 @@
 package com.example.learning_progress.security;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.learning_progress.entity.User;
@@ -20,11 +21,13 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	/**
-	 * 空リストを返却する
+	 * ユーザーのロールを返却する
 	 */
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of();
+		return user.getRoles().stream()
+				.map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+				.collect(Collectors.toList());
 	}
 
 	/**

@@ -1,5 +1,8 @@
 package com.example.learning_progress.service;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -7,8 +10,6 @@ import com.example.learning_progress.entity.User;
 import com.example.learning_progress.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-
-
 
 @Service
 public class UserService {
@@ -45,7 +46,20 @@ public class UserService {
 		// パスワードをハッシュ化して保存する
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+		// デフォルトで"USER"を設定する
+		user.setRoles(Set.of("USER"));
+
 		// ユーザーエンティティをデータベースへ登録する
 		return userRepository.save(user);
+	}
+
+	/**
+	 * 
+	 * 全ユーザー情報取得処理（管理者用）
+	 * 
+	 * @return ユーザー情報をすべて返却する
+	 */
+	public List<User> findAll() {
+		return userRepository.findAll();
 	}
 }
