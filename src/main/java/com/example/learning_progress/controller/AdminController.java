@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.learning_progress.entity.LearningGoal;
+import com.example.learning_progress.dto.response.AdminLearningGoalDto;
+import com.example.learning_progress.dto.response.AdminUserDto;
 import com.example.learning_progress.entity.ProgressLog;
-import com.example.learning_progress.entity.User;
 import com.example.learning_progress.service.LearningGoalService;
 import com.example.learning_progress.service.ProgressLogService;
 import com.example.learning_progress.service.UserService;
@@ -31,16 +31,25 @@ public class AdminController {
 	 * 管理者のみ全ユーザーを取得する
 	 */
 	@GetMapping("/users")
-	public List<User> getAllUsers() {
-		return userService.findAll();
+	public List<AdminUserDto> getAllUsers() {
+		return userService.findAll().stream()
+				.map(user -> new AdminUserDto(user.getId(), user.getUsername(), user.getRoles()))
+				.toList();
 	}
 
 	/**
 	 * 管理者のみ全学習目標を取得する
 	 */
 	@GetMapping("/goals")
-	public List<LearningGoal> getAllGoals() {
-		return goalService.findAll();
+	public List<AdminLearningGoalDto> getAllGoals() {
+		return goalService.findAll().stream()
+				.map(goal -> new AdminLearningGoalDto(
+						goal.getId(),
+						goal.getTitle(),
+						goal.getTargetHours(),
+						goal.getCreatedAt(),
+						goal.getUser().getUsername()))
+				.toList();
 	}
 
 	/**
