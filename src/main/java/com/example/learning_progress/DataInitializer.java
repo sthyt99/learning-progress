@@ -32,14 +32,20 @@ public class DataInitializer {
 		// 各Entityクラスのフィールドに初期値を設定する
 		return args -> {
 
+			// ① 全データ削除（順序に注意：子→親）
+			// ※本番環境では削除
+			logRepository.deleteAll();
+			goalRepository.deleteAll();
+			userRepository.deleteAll();
+
 			// ユーザーチェック
 			Optional<User> existing = userRepository.findByUsername("alice");
-			
+
 			Optional<User> existingAdmin = userRepository.findByUsername("admin");
-			
+
 			// ADMINユーザーがいない場合
 			if (existingAdmin.isEmpty()) {
-				
+
 				// ADMINユーザー作成
 				User admin = new User();
 				admin.setUsername("admin");

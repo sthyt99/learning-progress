@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.learning_progress.dto.response.AdminLearningGoalDto;
+import com.example.learning_progress.dto.response.AdminProgressLogDto;
 import com.example.learning_progress.dto.response.AdminUserDto;
-import com.example.learning_progress.entity.ProgressLog;
 import com.example.learning_progress.service.LearningGoalService;
 import com.example.learning_progress.service.ProgressLogService;
 import com.example.learning_progress.service.UserService;
@@ -42,6 +42,7 @@ public class AdminController {
 	 */
 	@GetMapping("/goals")
 	public List<AdminLearningGoalDto> getAllGoals() {
+	    
 		return goalService.findAll().stream()
 				.map(goal -> new AdminLearningGoalDto(
 						goal.getId(),
@@ -56,7 +57,16 @@ public class AdminController {
 	 * 管理者のみ全学習状況を取得する
 	 */
 	@GetMapping("/logs")
-	public List<ProgressLog> getAllLogs() {
-		return logService.findAll();
+	public List<AdminProgressLogDto> getAllLogs() {
+
+		return logService.findAll().stream()
+				.map(log -> new AdminProgressLogDto(
+						log.getId(),
+						log.getDate(),
+						log.getDescription(),
+						log.getHoursSpent(),
+						log.getGoal().getTitle(),
+						log.getGoal().getUser().getUsername()))
+				.toList();
 	}
 }
