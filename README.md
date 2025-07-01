@@ -40,13 +40,21 @@
 ## ディレクトリ構成（一部）
 
 src/
+
 ├── config/ # セキュリティ設定
+
 ├── controller/ # REST API コントローラ
+
 ├── dto/ # リクエスト・レスポンスDTO
+
 ├── entity/ # エンティティ
+
 ├── exception/ # 共通例外処理
+
 ├── repository/ # JPAリポジトリ
+
 ├── service/ # ビジネスロジック
+
 └── util/ # JWTユーティリティ など
 
 
