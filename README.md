@@ -54,7 +54,7 @@ src/
 
 1. **このリポジトリを clone**
    ```bash
-   git clone https://github.com/your-account/learning-progress-app.git
+   git clone https://github.com/sthyt99/learning-progress-app.git
    cd learning-progress-app
 
 2. MySQLのセットアップ
