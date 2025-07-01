@@ -71,10 +71,10 @@ src/
 
 3. application.properties を編集 （パスワードは公開しない）
 
-    spring.datasource.url=jdbc:mysql://localhost:3306/learning_db
-    spring.datasource.username=root
-    spring.datasource.password=********
-    spring.jpa.hibernate.ddl-auto=create
+    - spring.datasource.url=jdbc:mysql://localhost:3306/learning_db
+    - spring.datasource.username=root
+    - spring.datasource.password=********
+    - spring.jpa.hibernate.ddl-auto=create
    
 4.  Spring Boot アプリ起動
 
