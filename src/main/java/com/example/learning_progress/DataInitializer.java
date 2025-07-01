@@ -39,7 +39,7 @@ public class DataInitializer {
 			userRepository.deleteAll();
 
 			// ユーザーチェック
-			Optional<User> existing = userRepository.findByUsername("alice");
+			Optional<User> existing = userRepository.findByUsername("allice");
 
 			Optional<User> existingAdmin = userRepository.findByUsername("admin");
 
@@ -59,7 +59,7 @@ public class DataInitializer {
 
 				// ユーザー作成（パスワードはハッシュ化）
 				User alice = new User();
-				alice.setUsername("alice");
+				alice.setUsername("allice");
 				alice.setPassword(passwordEncoder.encode("password123"));
 				alice.setRoles(Set.of("USER"));
 				userRepository.save(alice);
