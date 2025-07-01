@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.learning_progress.entity.User;
+import com.example.learning_progress.exception.BusinessException;
+import com.example.learning_progress.exception.ErrorCode;
 import com.example.learning_progress.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -61,5 +63,24 @@ public class UserService {
 	 */
 	public List<User> findAll() {
 		return userRepository.findAll();
+	}
+	
+	/**
+	 * パスワード変更処理
+	 * 
+	 * @param username
+	 * @param currentPassword
+	 * @param newPassword
+	 */
+	public void changePassword(String username, String currentPassword, String newPassword) {
+		
+		User user = findByUsernameOrThrow(username);
+		
+		if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+			throw new BusinessException("現在のパスワードが正しくありません。", ErrorCode.UNAUTHORIZED_ACTION);
+		}
+		
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
 	}
 }
